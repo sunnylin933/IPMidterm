@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-
+    public static PlayerController instance;
     [SerializeField]
     private float playerSpeed = 2.0f;
     [SerializeField]
@@ -16,11 +16,24 @@ public class PlayerController : MonoBehaviour
     private CharacterController controller;
     private Vector3 playerVelocity;
     private bool groundedPlayer;
+
     private InputManager inputManager;
     private Transform cameraTransform;
 
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     private void Start()
     {
+        Cursor.lockState= CursorLockMode.Locked;
         controller = GetComponent<CharacterController>();
         inputManager = InputManager.instance;
         cameraTransform = Camera.main.transform;
@@ -47,7 +60,7 @@ public class PlayerController : MonoBehaviour
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
         }
 
-        playerVelocity.y += gravityValue * Time.deltaTime;
+        //playerVelocity.y += gravityValue * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
     }
 }

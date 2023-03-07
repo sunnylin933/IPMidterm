@@ -8,13 +8,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Bullets
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Gun
+  - Ground
+  - Enemy
   - 
   - 
   - 
