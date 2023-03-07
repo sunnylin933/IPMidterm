@@ -1,9 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public static PlayerMovement instance;
+
+    [Header("Player State")]
+    public bool isAlive = true;
+    [SerializeField] GameObject deadScreen;
+    [SerializeField] GameObject ammoUI;
+
     [Header("Movement")]
     [SerializeField] float moveSpeed;
     [SerializeField] float groundDrag;
@@ -22,7 +30,19 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 moveDirection;
     Rigidbody rb;
-    // Start is called before the first frame update
+
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -32,9 +52,12 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
-        MyInput();
-        SpeedControl();
+        if(isAlive)
+        {
+            isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
+            MyInput();
+            SpeedControl();
+        }
 
         if(isGrounded)
         {
@@ -89,5 +112,20 @@ public class PlayerMovement : MonoBehaviour
     private void ResetJump()
     {
         isJumpReady = true;
+    }
+
+    private void Die()
+    {
+        isAlive = false;
+        deadScreen.SetActive(true);
+        ammoUI.SetActive(false);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Enemy"))
+        {
+            Die();
+        }
     }
 }
